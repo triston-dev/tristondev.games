@@ -295,7 +295,6 @@ a:hover { color: var(--fire-4); }
 .contact__list div { display: flex; flex-wrap: wrap; column-gap: 24px; align-items: baseline; }
 .contact__list dt { min-width: 9em; color: var(--dim); }
 .contact__list dd { margin: 0; font-size: calc(var(--body-size) * 1.15); line-height: var(--lead-line); }
-.todo { color: var(--narration); }
 
 /* ---------- footer ---------- */
 
