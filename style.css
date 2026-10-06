@@ -1,0 +1,373 @@
+/* tristondev.games
+   Every colour is a step of Wenlow's palette (the game's UiStyle names in the comments).
+   All the words are Space Grotesk; the only pixel lettering is Wenlow's own wordmark picture.
+   The two pictures are pixel art and are shown only at whole-number scales: --s is the
+   scene's scale, raised at the widths where the 860 px picture would stop covering the page. */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("assets/fonts/SpaceGrotesk-Variable.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* the scene's own colours */
+  --sky: #17151f;        /* the title scene's night sky */
+  --ink: #0e0b12;        /* ink 0: the ground below the ridge, every panel */
+  /* the UI's words */
+  --salt: #e0ddca;       /* bloom 3: headings */
+  --text: #ccc3a9;       /* linen 3: words to read */
+  --narration: #9e9885;  /* stone 6: labels and quiet words */
+  --dim: #827f6f;        /* stone 5: notes on the ground */
+  --hair: #393b40;       /* stone 2: rules */
+  --brass: #ad8b42;      /* brass 2: a speaker's name; here the list's numbers */
+  /* the pyre */
+  --fire-1: #c74718;
+  --fire-2: #f08222;
+  --fire-3: #ffc247;
+  --fire-4: #fff1a8;
+
+  --face: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+
+  --s: 1;                          /* the scene's scale */
+  --px: calc(var(--s) * 1px);      /* one art pixel of the scene */
+  --gutter: 16px;
+  --rail: 0px;                     /* the label column, opened from 860 px up */
+  --gap: 0px;
+
+  --name-size: 80px;               /* the studio's name: Space Grotesk 500, tracked -0.04em */
+  --lead-size: 20px;               /* the two paragraphs that introduce: the studio and the game */
+  --lead-line: 1.5;
+  --body-size: 17px;               /* everything else that is read */
+  --body-line: 1.55;
+  --label-size: 12px;              /* the menu, the labels, the button: capitals, tracked open */
+  --label-track: 0.16em;
+  --mark-size: 15px;               /* the corner mark */
+  --mark: 2;                       /* the wordmark's scale */
+  --band-rows: 210;                /* how many of the scene's rows the band shows, up from row 370 */
+}
+
+@media (min-width: 860px) {
+  :root {
+    --s: 2;
+    --gutter: 48px;
+    --rail: 176px;
+    --gap: 48px;
+    --name-size: 160px;
+    --lead-size: 24px;
+    --body-size: 18px;
+    --label-size: 13px;
+    --mark-size: 16px;
+    --mark: 3;
+    --band-rows: 180;
+  }
+}
+@media (min-width: 1200px) { :root { --gutter: 80px; --rail: 224px; --gap: 64px; --name-size: 192px; --lead-size: 26px; } }
+@media (min-width: 1720px) {
+  :root {
+    --s: 3; --gutter: 112px; --rail: 320px; --gap: 80px;
+    --name-size: 224px; --lead-size: 28px; --body-size: 19px; --label-size: 14px; --mark-size: 17px; --mark: 4;
+  }
+}
+@media (min-width: 2300px) {
+  :root { --name-size: 256px; --lead-size: 32px; --body-size: 21px; --label-size: 16px; --mark-size: 20px; }
+}
+@media (min-width: 2581px) { :root { --s: 4; --name-size: 320px; --lead-size: 36px; --body-size: 23px; --label-size: 17px; --mark-size: 22px; --mark: 5; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--ink); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  font: 400 var(--body-size) / var(--body-line) var(--face);
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* the scene's stars sit in its top 124 rows; below them the sky is one flat colour */
+  background:
+    linear-gradient(to bottom, transparent calc(124 * var(--px)), var(--sky) 0) top center / 100% 100% no-repeat,
+    url("assets/art/title_scene.png") top center / calc(860 * var(--px)) calc(400 * var(--px)) no-repeat,
+    var(--sky);
+  image-rendering: pixelated;
+  overflow-x: hidden;
+}
+
+img { image-rendering: pixelated; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(2400px + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+a { color: var(--fire-3); text-decoration: none; }
+a:hover { color: var(--fire-4); }
+:focus-visible { outline: 2px solid var(--fire-3); outline-offset: 4px; }
+
+/* the quiet partner: small capitals, tracked open, for the menu, the labels and the button */
+.skip, .top__nav a, .label-head, .game__meta, .contact__list dt, .wish {
+  font: 500 var(--label-size) / 1.6 var(--face);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+}
+
+.skip {
+  position: absolute; left: var(--gutter); top: -64px; z-index: 10;
+  padding: 8px 16px; background: var(--ink); color: var(--fire-3);
+}
+.skip:focus { top: 16px; }
+
+/* ---------- the header ---------- */
+
+.top__row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding-block: 24px;
+}
+.top__home {
+  display: inline-flex; align-items: center; gap: 10px;
+  font: 500 var(--mark-size) / 1 var(--face);
+  letter-spacing: -0.02em;
+  color: var(--narration);
+}
+.top__nav a { display: inline-flex; align-items: center; color: var(--narration); }
+.top__home:hover, .top__nav a:hover { color: var(--salt); }
+.top__nav { display: flex; gap: 32px; margin: 0; padding: 0; list-style: none; }
+
+/* the ember stays pixel: 5 by 4 art pixels, shown at a whole scale */
+.coal { width: 20px; height: 16px; flex: none; image-rendering: pixelated; }
+@media (min-width: 2300px) { .coal { width: 25px; height: 20px; } }
+
+/* ---------- the studio ---------- */
+
+.hero__inner {
+  padding-block: calc(24 * var(--px)) calc(32 * var(--px));
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.hero__name {
+  grid-column: 1 / -1;
+  margin: 0 0 0 -0.04em;
+  /* never wider than the page: the name is about 4.7 of its own sizes wide */
+  font: 500 min(var(--name-size), calc((100vw - 2 * var(--gutter)) / 4.85)) / 1 var(--face);
+  letter-spacing: -0.04em;
+  color: var(--salt);
+  text-rendering: optimizeLegibility;
+  white-space: nowrap;
+}
+.hero__about {
+  grid-column: 2;
+  max-width: 30em;
+  margin: calc(var(--lead-size) * 0.9) 0 0;
+  padding-left: 24px;
+  border-left: 4px solid var(--fire-1);
+  font-size: var(--lead-size);
+  line-height: var(--lead-line);
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+/* ---------- the games ---------- */
+
+.label-head { margin: 0; color: var(--narration); }
+
+.games__head {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  align-items: center;
+  padding-block: 0 calc(8 * var(--px));
+}
+.games__rule { height: 2px; background: var(--hair); }
+
+.games__list { list-style: none; margin: 0; padding: 0; }
+
+/* the band: the scene's rows up to 370 (from 190 on wide screens, from 160 on phones, where the
+   wordmark needs more sky), so the ridge and the pyre sit near its foot */
+.band {
+  position: relative;
+  height: calc(var(--band-rows) * var(--px));
+  background: url("assets/art/title_scene.png") center calc(100% + 30 * var(--px)) / calc(860 * var(--px)) calc(400 * var(--px)) no-repeat var(--sky);
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+.band__inner {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  padding-top: calc(8 * var(--px));
+}
+.game__mark { grid-column: 2; margin: 0; line-height: 0; }
+.game__mark img {
+  width: calc(122px * var(--mark));
+  height: calc(41px * var(--mark));
+  max-width: none;
+}
+
+/* the embers: the pyre's top sits 107 art pixels right of the picture's centre and 44 above the band's foot */
+.embers {
+  position: absolute;
+  left: calc(50% + 107 * var(--px));
+  bottom: calc(46 * var(--px));
+  width: 0; height: 0;
+}
+.embers i {
+  position: absolute; left: 0; bottom: 0;
+  width: var(--px); height: var(--px);
+  background: var(--fire-2);
+  opacity: 0;
+  animation: rise var(--t, 6s) steps(var(--steps, 40)) var(--d, 0s) infinite;
+}
+.embers i:nth-child(1) { --dx: -3; --dy: 70;  --t: 5.2s; --d: 0s;   --steps: 35; background: var(--fire-3); }
+.embers i:nth-child(2) { --dx: 4;  --dy: 95;  --t: 7.0s; --d: 1.1s; --steps: 48; }
+.embers i:nth-child(3) { --dx: -6; --dy: 60;  --t: 4.6s; --d: 2.3s; --steps: 30; background: var(--fire-1); }
+.embers i:nth-child(4) { --dx: 2;  --dy: 110; --t: 8.2s; --d: 3.0s; --steps: 55; }
+.embers i:nth-child(5) { --dx: 7;  --dy: 80;  --t: 6.1s; --d: 4.4s; --steps: 40; background: var(--fire-3); }
+.embers i:nth-child(6) { --dx: -2; --dy: 105; --t: 7.6s; --d: 5.2s; --steps: 50; background: var(--fire-1); }
+.embers i:nth-child(7) { --dx: 1;  --dy: 75;  --t: 5.6s; --d: 6.3s; --steps: 38; }
+
+@keyframes rise {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  8%   { opacity: 1; }
+  60%  { opacity: .8; }
+  100% { transform: translate(calc(var(--dx) * var(--px)), calc(var(--dy) * -1 * var(--px))); opacity: 0; }
+}
+
+.game__body {
+  background: var(--ink);
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  padding-block: calc(4 * var(--px)) calc(var(--lead-size) * 4);
+}
+/* the ground runs the whole width, past the wrap */
+.game { background: var(--ink); }
+
+.game__num {
+  margin: 0;
+  font: 300 calc(var(--label-size) * 2.6) / 1 var(--face);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--brass);
+}
+.game__meta {
+  grid-column: 2;
+  margin: 0 0 calc(var(--lead-size) * 0.7);
+  color: var(--narration);
+}
+.game__line {
+  grid-column: 2;
+  max-width: 34em;
+  margin: 0;
+  font-size: var(--lead-size);
+  line-height: var(--lead-line);
+  color: var(--text);
+  text-wrap: pretty;
+}
+.game__actions { grid-column: 2; margin: calc(var(--lead-size) * 1.6) 0 0; }
+
+.wish {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 14px 24px 14px 20px;
+  border: 2px dashed var(--hair);
+  background: transparent;
+  color: var(--narration);
+  cursor: not-allowed;
+}
+.wish__soon { color: var(--dim); }
+
+/* ---------- contact ---------- */
+
+.contact { background: var(--ink); border-top: 2px solid var(--hair); }
+.contact__grid {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  padding-block: calc(var(--lead-size) * 2.2);
+}
+.contact .label-head { padding-top: 0.3em; }
+.contact__list { margin: 0; display: grid; gap: 10px; }
+.contact__list div { display: flex; flex-wrap: wrap; column-gap: 24px; align-items: baseline; }
+.contact__list dt { min-width: 9em; color: var(--dim); }
+.contact__list dd { margin: 0; font-size: calc(var(--body-size) * 1.15); line-height: var(--lead-line); }
+.todo { color: var(--narration); }
+
+/* ---------- footer ---------- */
+
+.foot { background: var(--ink); border-top: 2px solid var(--hair); }
+.foot__grid {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  padding-block: 32px 48px;
+  font-size: calc(var(--body-size) * 0.85);
+  line-height: 1.6;
+  color: var(--dim);
+}
+.foot__copy { margin: 0; color: var(--narration); }
+.foot__credits { margin: 0; padding: 0; list-style: none; }
+.foot__credits a { color: var(--narration); text-decoration: underline; text-decoration-color: var(--hair); text-underline-offset: 3px; }
+.foot__credits a:hover { color: var(--salt); text-decoration-color: currentColor; }
+
+/* the band's picture is named for screen readers by an empty element, so the heading inside the band stays a heading */
+.band__alt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* ---------- the page that is not here (404.html) ---------- */
+
+.lost__inner {
+  padding-block: calc(24 * var(--px)) calc(64 * var(--px));
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: var(--gap);
+  align-content: start;
+  min-height: 60vh;
+}
+.lost__title {
+  grid-column: 1 / -1;
+  margin: 0 0 0 -0.04em;
+  font: 500 min(calc(var(--name-size) * 0.5), calc((100vw - 2 * var(--gutter)) / 7)) / 1.05 var(--face);
+  letter-spacing: -0.035em;
+  color: var(--salt);
+  text-wrap: balance;
+}
+.lost__home {
+  grid-column: 2;
+  margin: calc(var(--lead-size) * 1.2) 0 0;
+  padding-left: 24px;
+  border-left: 4px solid var(--fire-1);
+  font-size: var(--lead-size);
+  line-height: var(--lead-line);
+}
+
+/* ---------- wide screens: the about stands beside the name, so the pyre is in the first view ---------- */
+
+@media (min-width: 1720px) {
+  .hero__inner { grid-template-columns: auto minmax(0, 1fr); align-items: end; }
+  .hero__name { grid-column: 1; }
+  .hero__about { grid-column: 2; margin: 0 0 calc(var(--name-size) * 0.14) var(--gap); max-width: 22em; }
+}
+
+/* ---------- phones: one column, the rail folds above ---------- */
+
+@media (max-width: 859px) {
+  .hero__inner, .games__head, .band__inner, .game__body, .contact__grid, .foot__grid, .lost__inner { grid-template-columns: minmax(0, 1fr); }
+  .hero__about, .game__mark, .game__meta, .game__line, .game__actions, .lost__home { grid-column: 1; }
+  .game__num { display: none; }
+  .hero__about, .lost__home { padding-left: 16px; }
+  .games__head { grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; padding-bottom: 16px; }
+  .contact .label-head { padding: 0 0 16px; }
+  .foot__copy { margin-bottom: 12px; }
+  .top__nav { gap: 22px; }
+  .top__home span { display: none; }
+  .wish { flex-wrap: wrap; row-gap: 4px; gap: 12px; padding: 13px 16px; letter-spacing: 0.12em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .embers { display: none; }
+}
